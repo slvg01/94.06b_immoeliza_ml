@@ -8,13 +8,11 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 
 
-def train():
-    """Trains a linear regression model on the full dataset and stores output."""
-    # Load the data
-    data = pd.read_csv("data/properties.csv")
 
-    # outliers
-    num_cols =[
+def ouliers(dataset):
+
+# outliers
+    cols_outliers =[
     "total_area_sqm", 
     "surface_land_sqm",
     "nbr_frontages",
@@ -25,19 +23,35 @@ def train():
     "cadastral_income",
     ]
     
-    print(len(data))
-    for col in num_cols : 
-        Q75 = data[col].quantile(0.75)
-        Q25 = data[col].quantile(0.25)
+    print(len(dataset))
+    for col in cols_outliers : 
+        Q75 = dataset[col].quantile(0.75)
+        Q25 = dataset[col].quantile(0.25)
         IQR = Q75-Q25
         upper = Q75 + 3.5 * IQR
         lower = Q25 - 3.5 * IQR
-        data = data[((data[col] < upper) & (data[col] > lower)) | (data[col].isnull()) | (data[col] == 0)]
-    print(len(data))
+        dataset = dataset[((dataset[col] < upper) & (dataset[col] > lower)) | (dataset[col].isnull()) | (dataset[col] == 0)]
+    print(len(dataset)) 
+    return dataset
 
-  
-    # Standardize numerical data 
-    num_cols2 = [
+    
+def standardize(fit_dataset, transform_dataset):
+   
+    """
+    Standardize numerical data in the transform_dataset based on the scaling parameters
+    learned from the fit_dataset.
+
+    Parameters:
+    - fit_dataset: DataFrame used to fit the scaler.
+    - transform_dataset: DataFrame where the numerical columns are to be standardized.
+
+    Returns:
+    - DataFrame: A copy of the transform_dataset with standardized numerical columns.
+    """
+
+
+# Standardize numerical data 
+    cols_std = [
     "latitude",
     "longitude",
     "construction_year",
@@ -50,15 +64,27 @@ def train():
     "primary_energy_consumption_sqm",
     "cadastral_income",    
     ]
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(data[num_cols2])
-    scaled_data = pd.DataFrame(scaled_data, columns=num_cols2)
-    scaled_data.index = data.index
-    data[num_cols2] = scaled_data
     
+    scaler = StandardScaler()
+    scaler.fit(fit_dataset[cols_std])
+    
+    scaled_data = scaler.transform(transform_dataset[cols_std])
+    scaled_df = pd.DataFrame(scaled_data, columns=cols_std, index=transform_dataset.index)
+    transform_dataset[cols_std] = scaled_df
+    return transform_dataset
 
 
 
+
+def train():
+    """Trains a linear regression model on the full dataset and stores output."""
+    # Load the data
+    
+    data = pd.read_csv("data/properties.csv")
+    data = ouliers(data)
+
+ 
+    
     # Define features to use
     num_features = [
         "construction_year",
@@ -100,6 +126,12 @@ def train():
         X, y, test_size=0.20, random_state=505
     )
 
+    # standardize the train and test test 
+    X_train = standardize(X_train, X_train)
+    X_test = standardize(X_test, X_test)
+   
+
+    
     # Impute missing values using SimpleImputer
     imputer = SimpleImputer(strategy="mean")
     imputer.fit(X_train[num_features])
