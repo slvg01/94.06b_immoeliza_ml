@@ -127,8 +127,8 @@ def train():
     )
 
     # standardize the train and test test 
-    X_train = standardize(X_train, X_train)
-    X_test = standardize(X_test, X_test)
+    #X_train = standardize(X_train, X_train)
+    #X_test = standardize(X_test, X_test)
    
 
     
