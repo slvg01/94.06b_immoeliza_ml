@@ -5,6 +5,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import StandardScaler
 
 
 def train():
@@ -12,10 +13,83 @@ def train():
     # Load the data
     data = pd.read_csv("data/properties.csv")
 
+    # outliers
+    num_cols =[
+    "total_area_sqm", 
+    "surface_land_sqm",
+    "nbr_frontages",
+    "nbr_bedrooms",
+    "terrace_sqm",
+    #"garden_sqm",
+    "primary_energy_consumption_sqm",
+    "cadastral_income",
+    ]
+    
+    print(len(data))
+    for col in num_cols : 
+        Q75 = data[col].quantile(0.75)
+        Q25 = data[col].quantile(0.25)
+        IQR = Q75-Q25
+        upper = Q75 + 3.5 * IQR
+        lower = Q25 - 3.5 * IQR
+        data = data[((data[col] < upper) & (data[col] > lower)) | (data[col].isnull()) | (data[col] == 0)]
+    print(len(data))
+
+  
+    # Standardize numerical data 
+    num_cols2 = [
+    "latitude",
+    "longitude",
+    "construction_year",
+    "total_area_sqm", 
+    "surface_land_sqm",
+    "nbr_frontages",
+    "nbr_bedrooms",
+    "terrace_sqm",
+    "garden_sqm",
+    "primary_energy_consumption_sqm",
+    "cadastral_income",    
+    ]
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(data[num_cols2])
+    scaled_data = pd.DataFrame(scaled_data, columns=num_cols2)
+    scaled_data.index = data.index
+    data[num_cols2] = scaled_data
+    
+
+
+
     # Define features to use
-    num_features = ["nbr_frontages"]
-    fl_features = ["fl_terrace"]
-    cat_features = ["equipped_kitchen"]
+    num_features = [
+        "construction_year",
+        "latitude",
+        "longitude",
+        "total_area_sqm",
+        "surface_land_sqm",
+        "nbr_frontages",
+        "nbr_bedrooms",
+        "terrace_sqm",
+        "primary_energy_consumption_sqm",
+        "cadastral_income",
+        "garden_sqm"
+    ]
+    fl_features = [
+        "fl_terrace",
+        "fl_open_fire",
+        "fl_swimming_pool",
+        "fl_garden",
+        "fl_double_glazing",
+        
+        
+    ]
+    cat_features = [
+        "subproperty_type",
+        "locality",
+        "equipped_kitchen",
+        "state_building",
+        "epc",
+        
+    ]
 
     # Split the data into features and target
     X = data[num_features + fl_features + cat_features]
@@ -55,7 +129,7 @@ def train():
         axis=1,
     )
 
-    print(f"Features: \n {X_train.columns.tolist()}")
+    #(f"Features: \n {X_train.columns.tolist()}")
 
     # Train the model
     model = LinearRegression()
@@ -78,8 +152,10 @@ def train():
         "enc": enc,
         "model": model,
     }
-    joblib.dump(artifacts, "models/artifacts.joblib")
+    joblib.dump(artifacts, "models/Linear_artifacts.joblib")
 
+    
 
 if __name__ == "__main__":
     train()
+

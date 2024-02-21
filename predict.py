@@ -20,7 +20,7 @@ def predict(input_dataset, output_dataset):
     ### -------------------------------------------------- ###
 
     # Load the model artifacts using joblib
-    artifacts = joblib.load("models/artifacts.joblib")
+    artifacts = joblib.load("models/Linear_artifacts.joblib")
 
     # Unpack the artifacts
     num_features = artifacts["features"]["num_features"]
@@ -65,5 +65,6 @@ def predict(input_dataset, output_dataset):
 
 if __name__ == "__main__":
     # how to run on command line:
-    # python .\predict.py -i "data\input.csv" -o "output\predictions.csv"
+    # python .\predict.py -i "data\properties.csv" -o "output\predictions.csv"
     predict()
+
