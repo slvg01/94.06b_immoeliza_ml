@@ -1,6 +1,7 @@
 import click
 import joblib
 import pandas as pd
+import xgboost as xgb
 
 
 @click.command()
@@ -20,7 +21,9 @@ def predict(input_dataset, output_dataset):
     ### -------------------------------------------------- ###
 
     # Load the model artifacts using joblib
-    artifacts = joblib.load("models/Linear_artifacts.joblib")
+    artifacts = joblib.load("models/XG_boost_artifacts.joblib")
+
+   
 
     # Unpack the artifacts
     num_features = artifacts["features"]["num_features"]
@@ -31,23 +34,28 @@ def predict(input_dataset, output_dataset):
     model = artifacts["model"]
 
     # Extract the used data
-    data = data[num_features + fl_features + cat_features]
+    data_extr = data[num_features + fl_features + cat_features]
 
+   
     # Apply imputer and encoder on data
-    data[num_features] = imputer.transform(data[num_features])
-    data_cat = enc.transform(data[cat_features]).toarray()
+    data_extr[num_features] = imputer.transform(data_extr[num_features])
+    data_cat = enc.transform(data_extr[cat_features]).toarray()
 
     # Combine the numerical and one-hot encoded categorical columns
-    data = pd.concat(
+    data_processed = pd.concat(
         [
-            data[num_features + fl_features].reset_index(drop=True),
+            data_extr[num_features + fl_features].reset_index(drop=True),
             pd.DataFrame(data_cat, columns=enc.get_feature_names_out()),
         ],
         axis=1,
     )
 
+    # Convert data to DMatrix format -  not necessary with cross validation 
+    #ddata = xgb.DMatrix(data_processed)
+
+
     # Make predictions
-    predictions = model.predict(data)
+    predictions = model.predict(data_processed)
     #predictions = predictions[:10]  # just picking 10 to display sample output :-)  
 
     ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###
@@ -58,10 +66,9 @@ def predict(input_dataset, output_dataset):
     click.echo(click.style("Predictions generated successfully!", fg="green"))
     click.echo(f"Saved to {output_dataset}")
     click.echo(
-        f"Nbr. observations: {data.shape[0]} | Nbr. predictions: {predictions.shape[0]}"
+        f"Nbr. observations: {data_processed.shape[0]} | Nbr. predictions: {predictions.shape[0]}"
     )
     ### -------------------------------------------------- ###
-
 
 
 if __name__ == "__main__":

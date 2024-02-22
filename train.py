@@ -6,7 +6,8 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
-
+import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
 
 
 def ouliers(dataset):
@@ -28,8 +29,8 @@ def ouliers(dataset):
         Q75 = dataset[col].quantile(0.75)
         Q25 = dataset[col].quantile(0.25)
         IQR = Q75-Q25
-        upper = Q75 + 3.5 * IQR
-        lower = Q25 - 3.5 * IQR
+        upper = Q75 + 3.7 * IQR
+        lower = Q25 - 3.7 * IQR
         dataset = dataset[((dataset[col] < upper) & (dataset[col] > lower)) | (dataset[col].isnull()) | (dataset[col] == 0)]
     print(len(dataset)) 
     return dataset
@@ -52,15 +53,15 @@ def standardize(fit_dataset, transform_dataset):
 
 # Standardize numerical data 
     cols_std = [
-    "latitude",
-    "longitude",
+    #"latitude",
+    #"longitude",
     "construction_year",
     "total_area_sqm", 
     "surface_land_sqm",
-    "nbr_frontages",
-    "nbr_bedrooms",
+    #"nbr_frontages",
+    #"nbr_bedrooms",
     "terrace_sqm",
-    "garden_sqm",
+    #"garden_sqm",
     "primary_energy_consumption_sqm",
     "cadastral_income",    
     ]
@@ -83,7 +84,7 @@ def train():
     data = pd.read_csv("data/properties.csv")
     data = ouliers(data)
 
- 
+
     
     # Define features to use
     num_features = [
@@ -97,24 +98,35 @@ def train():
         "terrace_sqm",
         "primary_energy_consumption_sqm",
         "cadastral_income",
-        "garden_sqm"
+        #"garden_sqm",
+        #"zip_code"
+        
     ]
+
     fl_features = [
         "fl_terrace",
         "fl_open_fire",
         "fl_swimming_pool",
         "fl_garden",
         "fl_double_glazing",
+        #"fl_flood_zone", 
+        #"fl_furnished"
         
-        
+            
     ]
+
     cat_features = [
+        #"property_type",
         "subproperty_type",
+        #"region",
+        #"province"
         "locality",
         "equipped_kitchen",
         "state_building",
         "epc",
+        #"heating_type",
         
+            
     ]
 
     # Split the data into features and target
@@ -128,9 +140,9 @@ def train():
 
     # standardize the train and test test 
     #X_train = standardize(X_train, X_train)
-    #X_test = standardize(X_test, X_test)
+    #X_test = standardize(X_train, X_test)
    
-
+   
     
     # Impute missing values using SimpleImputer
     imputer = SimpleImputer(strategy="mean")
@@ -163,15 +175,45 @@ def train():
 
     #(f"Features: \n {X_train.columns.tolist()}")
 
-    # Train the model
-    model = LinearRegression()
-    model.fit(X_train, y_train)
+    
+    # Convert data to DMatrix format
+    #dtrain = xgb.DMatrix(X_train, label=y_train)
+    #dtest = xgb.DMatrix(X_test, label=y_test)
 
-    # Evaluate the model
-    train_score = r2_score(y_train, model.predict(X_train))
-    test_score = r2_score(y_test, model.predict(X_test))
-    print(f"Train R² score: {train_score}")
-    print(f"Test R² score: {test_score}")
+    # Define the parameter grid for cross-validation
+    param_grid = {
+        'max_depth': [9],
+        'eta': [0.1],
+        'subsample': [0.9],
+        'colsample_bytree': [0.8],
+        'objective': ['reg:squarederror'],
+        'eval_metric': ['rmse']
+    }
+
+    # Create the XGBoost regressor
+    xgb_reg = xgb.XGBRegressor()
+
+    # Perform grid search cross-validation
+    grid_search = GridSearchCV(estimator=xgb_reg, param_grid=param_grid, cv=5, scoring='r2', verbose=2, n_jobs=-1)
+    grid_search.fit(X_train, y_train)
+
+    # Get the best parameters and best estimator
+    best_params = grid_search.best_params_
+    best_model = grid_search.best_estimator_
+
+    # Make predictions on the test set
+    y_pred_train = best_model.predict(X_train)
+    y_pred_test = best_model.predict(X_test)
+
+    # Evaluate the model using R2 score
+    r2_train = r2_score(y_train, y_pred_train)
+    r2_test = r2_score(y_test, y_pred_test)
+    print(f"Train R² score: {r2_train}")
+    print(f"Train R² score: {r2_test}")
+
+    print("Best Parameters:", best_params)
+
+
 
     # Save the model
     artifacts = {
@@ -182,9 +224,9 @@ def train():
         },
         "imputer": imputer,
         "enc": enc,
-        "model": model,
+        "model": best_model,
     }
-    joblib.dump(artifacts, "models/Linear_artifacts.joblib")
+    joblib.dump(artifacts, "models/XG_boost_artifacts.joblib")
 
     
 
