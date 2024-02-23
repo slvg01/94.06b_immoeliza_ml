@@ -21,7 +21,7 @@ Nevertheless test on the final chosen model shown that score were higher without
 | XGBoost                  | without Feature optimization / without outliers eclusion                                                      | 0.66                  |
 | XGBoost                  | with Features List optimzation / without outliers  exclusion                                                  | 0.73                  |
 | XGBoost                  | with outliers exclusion and standardization                                                                   | 0.75                  |
-| XGBoost                  | with outliers and standardization and paremeters cross validation                                             | 0.77                  |
+| XGBoost                  | with outliers in and standardization and paremeters cross validation                                          | 0.77                  |
 | GradienBoost             | with outliers in  and cross validation                                                                        | 0.773                 |
 | GradienBoost             | with outliers out and cross validation                                                                        | 0.784                 |
 | Random forest regressor  | with features optimization & n_estimators=100, max_depth=10,  min_samples_split=2,min_samples_leaf=1          | 0.69                  |
@@ -29,19 +29,19 @@ Nevertheless test on the final chosen model shown that score were higher without
 | Random forest regressor  | with features optimi & outliers in & crossval n_est=300 max_depth=none min_samples_split=2,min_samples_leaf=1 | 0.769                 |
 | Random forest regressor  | with features optim & outliers in & n_estimators=250, max_depth=15, min_samples_split=2,min_samples_leaf=1    | 0.756                 |
 
+Final model that was retained and that is embeddced in the last version of the script is XXXXXC
 
 ## Performance
-
-Performance metrics for the various models tested, visualizations, ...
+Performance metrics has been exclusively coefficent of determination (r2) during the training and testing phase  and Root Mean Squared Error (RMSE) with the real world data test
 
 ## Limitations
 
 What are the limitations of your model?
 
 ## Usage
-
+train.py is the script to train the model 
+predict.py is the script to generate prediction. As specified at the end of that script it can be used directly through commandline. 
 What are the dependencies, what scripts are there to train the model, how to generate predictions, ...
 
 ## Maintainers
-
-Who to contact in case of questions or issues?
+[sl](https://github.com/slvg01)https://github.com/slvg01
