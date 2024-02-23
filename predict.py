@@ -50,12 +50,15 @@ def predict(input_dataset, output_dataset):
         axis=1,
     )
 
-    # Convert data to DMatrix format -  not necessary with cross validation 
-    #ddata = xgb.DMatrix(data_processed)
+    print(data_processed.head())  # Print the first few rows of data_processed
+    print(data_processed.info())  # Print information about data_processed DataFrame
+    print(type(data_processed))   # Print the type of data_processed
 
+    # Convert data_processed to DMatrix format
+    ddata = xgb.DMatrix(data_processed)
 
     # Make predictions
-    predictions = model.predict(data_processed)
+    predictions = model.predict(ddata)
     #predictions = predictions[:10]  # just picking 10 to display sample output :-)  
 
     ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###

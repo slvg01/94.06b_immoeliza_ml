@@ -7,7 +7,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
-from sklearn.model_selection import GridSearchCV
 
 
 def ouliers(dataset):
@@ -84,7 +83,7 @@ def train():
     data = pd.read_csv("data/properties.csv")
     data = ouliers(data)
 
-
+ 
     
     # Define features to use
     num_features = [
@@ -177,43 +176,33 @@ def train():
 
     
     # Convert data to DMatrix format
-    #dtrain = xgb.DMatrix(X_train, label=y_train)
-    #dtest = xgb.DMatrix(X_test, label=y_test)
+    dtrain = xgb.DMatrix(X_train, label=y_train)
+    dtest = xgb.DMatrix(X_test, label=y_test)
 
-    # Define the parameter grid for cross-validation
-    param_grid = {
-        'max_depth': [9],
-        'eta': [0.1],
-        'subsample': [0.9],
-        'colsample_bytree': [0.8],
-        'objective': ['reg:squarederror'],
-        'eval_metric': ['rmse']
+    # Set parameters for XGBoost
+    params = {
+    'max_depth': 5,
+    'eta': 0.1,
+    'objective': 'reg:squarederror',
+    'eval_metric': 'rmse'
     }
+    
+    # Train the model
+    num_rounds = 1500
+    model = xgb.train(params, dtrain, num_rounds)
 
-    # Create the XGBoost regressor
-    xgb_reg = xgb.XGBRegressor()
-
-    # Perform grid search cross-validation
-    grid_search = GridSearchCV(estimator=xgb_reg, param_grid=param_grid, cv=5, scoring='r2', verbose=2, n_jobs=-1)
-    grid_search.fit(X_train, y_train)
-
-    # Get the best parameters and best estimator
-    best_params = grid_search.best_params_
-    best_model = grid_search.best_estimator_
+    # Make predictions on the train set
+    y_pred_train = model.predict(dtrain)
 
     # Make predictions on the test set
-    y_pred_train = best_model.predict(X_train)
-    y_pred_test = best_model.predict(X_test)
+    y_pred_test = model.predict(dtest)
 
     # Evaluate the model using R2 score
     r2_train = r2_score(y_train, y_pred_train)
-    r2_test = r2_score(y_test, y_pred_test)
     print(f"Train R² score: {r2_train}")
-    print(f"Train R² score: {r2_test}")
-
-    print("Best Parameters:", best_params)
-
-
+    
+    r2_test = r2_score(y_test, y_pred_test)
+    print(f"Test R² score: {r2_test}")
 
     # Save the model
     artifacts = {
@@ -224,7 +213,7 @@ def train():
         },
         "imputer": imputer,
         "enc": enc,
-        "model": best_model,
+        "model": model,
     }
     joblib.dump(artifacts, "models/XG_boost_artifacts.joblib")
 
