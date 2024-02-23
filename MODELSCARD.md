@@ -22,7 +22,8 @@ Nevertheless test on the final chosen model shown that score were higher without
 | XGBoost                  | with Features List optimzation / without outliers  exclusion                                                  | 0.73                  |
 | XGBoost                  | with outliers exclusion and standardization                                                                   | 0.75                  |
 | XGBoost                  | with outliers and standardization and paremeters cross validation                                             | 0.77                  |
-| GradienBoost             | with outliers and cross validation                                                                            | 0.771                 |
+| GradienBoost             | with outliers in  and cross validation                                                                        | 0.773                 |
+| GradienBoost             | with outliers out and cross validation                                                                        | 0.784                 |
 | Random forest regressor  | with features optimization & n_estimators=100, max_depth=10,  min_samples_split=2,min_samples_leaf=1          | 0.69                  |
 | Random forest regressor  | with features optim & outliers in & n_estimators=100, max_depth=10, min_samples_split=2,min_samples_leaf=1    | 0.719                 |
 | Random forest regressor  | with features optimi & outliers in & crossval n_est=300 max_depth=none min_samples_split=2,min_samples_leaf=1 | 0.769                 |
