@@ -1,7 +1,7 @@
 import click
 import joblib
 import pandas as pd
-import xgboost as xgb
+
 
 
 @click.command()
@@ -15,13 +15,13 @@ import xgboost as xgb
 )
 def predict(input_dataset, output_dataset):
     """Predicts house prices from 'input_dataset', stores it to 'output_dataset'."""
-    ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###
+    ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ##
     # Load the data
     data = pd.read_csv(input_dataset)
     ### -------------------------------------------------- ###
 
     # Load the model artifacts using joblib
-    artifacts = joblib.load("models/XG_boost_artifacts.joblib")
+    artifacts = joblib.load("models/Gradient_boost_artifacts.joblib")
 
    
 
@@ -50,15 +50,9 @@ def predict(input_dataset, output_dataset):
         axis=1,
     )
 
-    print(data_processed.head())  # Print the first few rows of data_processed
-    print(data_processed.info())  # Print information about data_processed DataFrame
-    print(type(data_processed))   # Print the type of data_processed
-
-    # Convert data_processed to DMatrix format
-    ddata = xgb.DMatrix(data_processed)
 
     # Make predictions
-    predictions = model.predict(ddata)
+    predictions = model.predict(data_processed)
     #predictions = predictions[:10]  # just picking 10 to display sample output :-)  
 
     ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###
