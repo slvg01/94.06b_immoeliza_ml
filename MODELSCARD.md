@@ -42,10 +42,10 @@ gradientboosting model :
 - it can be computationnally expensive on big set (not so much the case here) because of the weak learners addition
 
 RandomForest is 
-computationnally expensive as each trees is trained independantly. Thus larger max-depth like the one used here is expensive
-lack of interpreatbility : understanding the main contributing features to the prediction is not a given, :  to the 
-overfitting and sensibility to noise are always a risk in the depth is too big. 
-last the imbalanced data risk is requesting  resampling to avoid that overprevalent feature takes too high domination in the prediction. To be reviewed on that point. 
+- computationnally expensive as each trees is trained independantly. Thus larger max-depth like the one used here is expensive
+- lack of interpreatbility : understanding the main contributing features to the prediction is not a given, :  to the 
+- overfitting and sensibility to noise are always a risk in the depth is too big. 
+- last the imbalanced data risk is requesting  resampling to avoid that overprevalent feature takes too high domination in the prediction. To be reviewed on that point. 
 
 ## Usage
 train.py is the script to train the model 
