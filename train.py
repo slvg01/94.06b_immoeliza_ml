@@ -48,7 +48,7 @@ def standardize(fit_dataset, transform_dataset):
     - DataFrame: A copy of the transform_dataset with standardized numerical columns.
     """
     cols_std = [
-        "construction_year",
+        #"construction_year",
         "total_area_sqm", 
         "surface_land_sqm",
         "terrace_sqm",
@@ -60,8 +60,8 @@ def standardize(fit_dataset, transform_dataset):
     scaler.fit(fit_dataset[cols_std])
     
     scaled_data = scaler.transform(transform_dataset[cols_std])
-    scaled_df = pd.DataFrame(scaled_data, columns=cols_std, index=transform_dataset.index)
-    transform_dataset[cols_std] = scaled_df
+    #scaled_df = pd.DataFrame(scaled_data, columns=cols_std, index=transform_dataset.index)
+    transform_dataset[cols_std] = scaled_data
     return transform_dataset
 
 
@@ -69,7 +69,7 @@ def train():
     """Trains a linear regression model on the full dataset and stores output."""
     # Load the data
     data = pd.read_csv("data/properties.csv")
-    #data = ouliers(data)
+    
 
     # Define features to use
     num_features = [
@@ -83,6 +83,8 @@ def train():
         "terrace_sqm",
         "primary_energy_consumption_sqm",
         "cadastral_income",
+        "garden_sqm",
+        "zip_code"
     ]
 
     fl_features = [
@@ -91,9 +93,12 @@ def train():
         "fl_swimming_pool",
         "fl_garden",
         "fl_double_glazing",
+        #"fl_floodzone", 
+        #"fl_furnished"
     ]
 
     cat_features = [
+        #"property_type"
         "subproperty_type",
         "locality",
         "equipped_kitchen",
@@ -110,12 +115,18 @@ def train():
         X, y, test_size=0.20, random_state=505
     )
 
-    # Impute missing values using SimpleImputer
+    # Impute  numerical features missing values using SimpleImputer
     imputer = SimpleImputer(strategy="mean")
     imputer.fit(X_train[num_features])
     X_train[num_features] = imputer.transform(X_train[num_features])
     X_test[num_features] = imputer.transform(X_test[num_features])
 
+
+    #Standardize the numerical features
+    #X_train[num_features] = standardize(X_train, X_train)
+    #X_test[num_features] = standardize(X_train, X_test)
+    
+    
     # Convert categorical columns with one-hot encoding using OneHotEncoder
     enc = OneHotEncoder()
     enc.fit(X_train[cat_features])
@@ -139,10 +150,15 @@ def train():
         axis=1,
     )
 
-    # Define the hyperparameters grid for Gradient Boosting Regressor
+    #remove outliers 
+    #X_train = ouliers(X_train)
+    #X_test = outliers(X_test)
+
+
+    # Define the hyperparameters grid for Gradient Boosting Regressor cross validation
     param_grid = {
-        'n_estimators': [100, 150],
-        'max_depth': [5, 7],
+        'n_estimators': [150,175, 200],
+        'max_depth': [7,8,9],
     }
 
     # Instantiate the Gradient Boosting Regressor
