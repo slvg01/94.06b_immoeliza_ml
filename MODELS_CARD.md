@@ -2,7 +2,7 @@
 
 ## Project context
 
-The objective is to determine the best possible machine learning model to predict property price on the belgium market. The initial data set is coming from  an initial immoweb scraping,  analysis and cleaning (see (repository)[https://github.com/slvg01/immo-eliza-scraping-Qbicle.git]
+The objective is to determine the best possible machine learning model to predict property price on the belgium market. The initial data set is coming from  an initial immoweb scraping,  analysis and cleaning (see (repository)[https://github.com/slvg01/immo-eliza-scraping-Qbicle.git])
 
 ## Data
 The Input data set has 75K properties over 28 features, beyond the target variable which is the price 
@@ -12,7 +12,7 @@ The Data have been initially preprocessed in order to :
 Nevertheless test on the final chosen model shown that score were higher without it. Those steps were thus taken out. 
 
 ## Model details
-|Model                     | Parameter                                                                                                     | Results (on test_set) |
+|Model                     | Parameter                                                                                                     | Results (R2 on test_set) |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------| ----------------------|
 | Linear Regression        | without Feature optimization / without outliers eclusion                                                      | 0.25                  |
 | Linear Regression        | with Features List optimzation / without outliers  exclusion                                                  | 0.35                  |
