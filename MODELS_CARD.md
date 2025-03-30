@@ -22,14 +22,14 @@ Nevertheless test on the final chosen model shown that score were higher without
 | XGBoost                  | with Features List optimzation / without outliers  exclusion                                                  | 0.73                  |
 | XGBoost                  | with outliers exclusion and standardization                                                                   | 0.75                  |
 | XGBoost                  | with outliers in and standardization out and paremeters cross validation                                      | 0.77                  |
-| GradienBoost             | with outliers in  and cross validation                                                                        | 0.773                 |
-| GradienBoost             | with outliers out and cross validation                                                                        | 0.772                 |
+| GradientBoost            | with outliers in  and cross validation                                                                        | 0.773                 |
+| GradientBoost            | with outliers out and cross validation                                                                        | 0.772                 |
 | Random forest regressor  | with features optimization & n_estimators=100, max_depth=10,  min_samples_split=2,min_samples_leaf=1          | 0.69                  |
 | Random forest regressor  | with features optim & outliers in & n_estimators=100, max_depth=10, min_samples_split=2,min_samples_leaf=1    | 0.719                 |
 | Random forest regressor  | with features optimi & outliers in & crossval n_est=300 max_depth=none min_samples_split=2,min_samples_leaf=1 | 0.769                 |
 | Random forest regressor  | with features optim & outliers in & n_estimators=250, max_depth=15, min_samples_split=2,min_samples_leaf=1    | 0.756                 |
 
-Final model that was retained and that is embeddced in the last version of the script is XXXXXC
+Final model that was retained and that is embedded in the last version of the script is GradientBoostingRegressor
 
 ## Performance
 Performance metrics has been exclusively coefficent of determination (r2) during the training and testing phase  and Root Mean Squared Error (RMSE) with the real world data test
@@ -50,7 +50,13 @@ RandomForest is
 ## Usage
 train.py is the script to train the model 
 predict.py is the script to generate prediction. As specified at the end of that script it can be used directly through commandline. 
-What are the dependencies, what scripts are there to train the model, how to generate predictions, ...
+
+- Clone there repo 
+- cd in 6b-immoeliza_ml
+- run requirement.txt
+- run train.py and predict.py as you need
+
+
 
 ## Maintainers
 [sl](https://github.com/slvg01)

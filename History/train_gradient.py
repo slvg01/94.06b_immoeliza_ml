@@ -93,8 +93,8 @@ def train():
         "fl_swimming_pool",
         "fl_garden",
         "fl_double_glazing",
-        #"fl_floodzone", 
-        #"fl_furnished"
+        "fl_floodzone", 
+        "fl_furnished"
     ]
 
     cat_features = [
@@ -158,7 +158,7 @@ def train():
     # Define the hyperparameters grid for Gradient Boosting Regressor cross validation
     param_grid = {
         'n_estimators': [175, 200],
-        'max_depth': [8,9],
+        'max_depth': [7,8],
     }
 
     # Instantiate the Gradient Boosting Regressor
