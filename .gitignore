@@ -1,5 +1,7 @@
+#File, folder an environment settings
 venv/
-READMEproj.md
+proj.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
