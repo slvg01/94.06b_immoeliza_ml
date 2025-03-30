@@ -1,18 +1,10 @@
-# Regression
-
-- Repository: `immo-eliza-ml`
-- Type: `Consolidation`
-- Duration: `3-4 days`
-- Deadline: `23/02/2024 5:00 PM`
-- Team: solo
-
 
 
 ## The Mission
 
-The real estate company  asked to create a machine learning model to predict prices of real estate properties in Belgium.
+Immoweb asked to create a machine learning model to predict prices of real estate properties in Belgium.
 
-After the **scraping**, **cleaning** and **analyzing**, the objective of the repo is to preprocess the data and build a performant machine learning model!
+After the **scraping**, **cleaning** and **analyzing** data in previous repo, the objective of this repo is to preprocess the data and build a performant machine learning model!
 
 ## Steps followed
 
